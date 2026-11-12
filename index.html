@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgentOS P1 · 方案文档</title>
+<style>body{font:16px/1.75 "Segoe UI","Microsoft YaHei",sans-serif;max-width:860px;margin:0 auto;padding:56px 22px;color:#111827;background:#f8fafc}
+h1{font-size:30px;margin:0 0 8px}h2{font-size:20px;margin-top:32px;border-left:4px solid #2563eb;padding-left:10px}
+code{background:#eef2f7;padding:1px 5px;border-radius:4px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #e2e8f0;padding:8px 10px;text-align:left}th{background:#f1f5f9}
+.muted{color:#64748b}</style></head><body>
+<h1>AgentOS P1 · 真实链路</h1>
+<p class="muted">一句话任务 → LLM 规划 → 只读库 → 自动报告 → 人工审批 → 多通道投递（失败自动回退）｜更新：2026-11-12</p>
+<h2>它解决什么</h2>
+<ul><li>可中断：高风险动作 <code>interrupt()</code> 等人工 approve/reject</li>
+<li>可恢复：SQLite checkpoint，进程重启后继续，不重跑已完成步骤</li>
+<li>只读安全：<code>mode=ro</code> + <code>query_only</code>，固定 SQL 参数化，无写库工具</li>
+<li>零丢件：投递 Telegram → 本地 IM → 收件箱，失败自动回退并审计</li></ul>
+<h2>流水线</h2>
+<table><tr><th>步骤</th><th>组件</th><th>产物</th></tr>
+<tr><td>规划</td><td>DeepSeek（JSON 模式）</td><td>步骤/参数/风险等级</td></tr>
+<tr><td>编排</td><td>LangGraph 状态图</td><td>可恢复的执行状态</td></tr>
+<tr><td>查询</td><td>只读 SQLite 工具</td><td>真实汇总表</td></tr>
+<tr><td>审批</td><td>interrupt + resume</td><td>审批单/决策</td></tr>
+<tr><td>投递</td><td>多通道 auto 回退</td><td>收件箱文件 + 审计日志</td></tr></table>
+<h2>用到的开源项目</h2><p>LangGraph（MIT）· pytest（MIT）· ruff（MIT）· actions/checkout（MIT）· actions/setup-python（MIT）</p>
+<h2>代码</h2><p>代码在私有仓库；本页为公开方案说明。</p>
+<p class="muted">GitHub Pages 托管 · MIT License</p></body></html>
